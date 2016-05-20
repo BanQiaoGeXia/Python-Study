@@ -70,18 +70,18 @@ boom('Super man is already in the position !!!')
 
 #Don't worry 越蛋疼越神奇
                                     
-def logged(when):
-    def log(f,*args,**kargs):
+def logged(when):               #第一层 这里得到了装饰器参数
+    def log(f,*args,**kargs):   #这只是一个为装饰服务的小函数
         print "fun:%s  args:%r  kargs:%r"%(f,args,kargs)
 
-    def pre_logged(f):
-        def wrapper(*args,**kargs):
+    def pre_logged(f):          #这是第一种装饰 这是第二层 得到的是被装饰函数名
+        def wrapper(*args,**kargs): #这是第三层 进行装饰并执行被装饰函数
             log(f,*args,**kargs)
             return f(*args,**kargs)
         return wrapper
 
-    def post_logged(f):
-        def wrapper(*args,**kargs):
+    def post_logged(f):         #这是第二种装饰 这是第二层 得到的是被装饰函数名
+        def wrapper(*args,**kargs): #这是第三层 进行装饰并执行被装饰函数
             now = time.time()
             try:
                 return f(*args,**kargs)
@@ -90,11 +90,11 @@ def logged(when):
                 print "time delta:%s"%(time.time()-now)
         return wrapper
     try:
-        return {"pre":pre_logged,"post":post_logged}[when]
+        return {"pre":pre_logged,"post":post_logged}[when]  #根据装饰器参数进行匹配  决定执行哪一种装饰
     except KeyError,e:
-        raise ValueError(e),'must be "pre" or "post"'
+        raise ValueError(e),'must be "pre" or "post"'       #异常处理
 
-@logged("pre")
+@logged("pre")                      #装饰器正在装饰  参数决定了用哪种装饰
 def fun(name):
     print "BOOM SHAKALAKA ,",name
 
